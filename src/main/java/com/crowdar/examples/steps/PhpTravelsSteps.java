@@ -2,6 +2,8 @@ package com.crowdar.examples.steps;
 
 import com.crowdar.core.Injector;
 import com.crowdar.core.PageSteps;
+import com.crowdar.examples.pages.PhpTravelsBillingPage;
+import com.crowdar.examples.pages.PhpTravelsFlightPage;
 import com.crowdar.examples.pages.PhpTravelsHomePage;
 import com.crowdar.examples.pages.PhpTravelsSearchResultPage;
 import cucumber.api.java.en.And;
@@ -38,33 +40,32 @@ public class PhpTravelsSteps extends PageSteps {
 
     @And("clicks the (.*) result writing email (.*) password (.*)")
     public void clicksTheResultWriting(String result, String mail, String psw) {
-        Injector._page(PhpTravelsHomePage.class).clickFirstResult();
-        Injector._page(PhpTravelsHomePage.class).writeEmail(mail);
-        Injector._page(PhpTravelsHomePage.class).writePassword(psw);
+        Injector._page(PhpTravelsFlightPage.class).clickFirstResult();
+        Injector._page(PhpTravelsBillingPage.class).writeEmail(mail);
+        Injector._page(PhpTravelsBillingPage.class).writePassword(psw);
     }
 
 
     @And("completes with name (.*) Surname (.*) email (.*) phone (.*) birthday (.*) passport (.*) expiration (.*) nationality (.*)")
     public void writePersonalInformation(String name, String surname, String email, String phone, String birthday, String passport, String expiration, String nationality) throws InterruptedException {
-        Injector._page(PhpTravelsHomePage.class).writeName(name);
-        Injector._page(PhpTravelsHomePage.class).writeSurname(surname);
-        Injector._page(PhpTravelsHomePage.class).writeMail(email);
-        Injector._page(PhpTravelsHomePage.class).writePhone(phone);
-        Injector._page(PhpTravelsHomePage.class).writeBirthday(birthday);
-        Injector._page(PhpTravelsHomePage.class).writePassport(passport);
-        Injector._page(PhpTravelsHomePage.class).writeExpiration(expiration);
-        Injector._page(PhpTravelsHomePage.class).writeNationality(nationality);
-
+        Injector._page(PhpTravelsBillingPage.class).writeName(name);
+        Injector._page(PhpTravelsBillingPage.class).writeSurname(surname);
+        Injector._page(PhpTravelsBillingPage.class).writeMail(email);
+        Injector._page(PhpTravelsBillingPage.class).writePhone(phone);
+        Injector._page(PhpTravelsBillingPage.class).writeBirthday(birthday);
+        Injector._page(PhpTravelsBillingPage.class).writePassport(passport);
+        Injector._page(PhpTravelsBillingPage.class).writeExpiration(expiration);
+        Injector._page(PhpTravelsBillingPage.class).writeNationality(nationality);
     }
 
     @And("pays with (.*) number (.*) expiration month (.*) year (.*) cvv (.*)")
     public void writePaymentInformation(String card, String cardNumber, String cardExpirateMonth,String cardExpirateYear, String cvv) throws InterruptedException {
-        Injector._page(PhpTravelsHomePage.class).selectCreditCard(card);
-        Injector._page(PhpTravelsHomePage.class).writeCardNumber(cardNumber);
-        Injector._page(PhpTravelsHomePage.class).selectExpiration(cardExpirateMonth, cardExpirateYear);
-        Injector._page(PhpTravelsHomePage.class).writeCvv(cvv);
-        Injector._page(PhpTravelsHomePage.class).acceptConditions();
-        Injector._page(PhpTravelsHomePage.class).finishChecking();
+        Injector._page(PhpTravelsBillingPage.class).selectCreditCard(card);
+        Injector._page(PhpTravelsBillingPage.class).writeCardNumber(cardNumber);
+        Injector._page(PhpTravelsBillingPage.class).selectExpiration(cardExpirateMonth, cardExpirateYear);
+        Injector._page(PhpTravelsBillingPage.class).writeCvv(cvv);
+        Injector._page(PhpTravelsBillingPage.class).acceptConditions();
+        Injector._page(PhpTravelsBillingPage.class).finishChecking();
     }
 
     @Then("A reservation number is not provide")

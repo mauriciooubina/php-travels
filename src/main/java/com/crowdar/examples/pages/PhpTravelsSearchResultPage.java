@@ -19,4 +19,5 @@ public class PhpTravelsSearchResultPage extends PageBasePhpTravels {
         return stats().getText();
     }
 
+    public Object getTitle() {return driver.getTitle();}
 }

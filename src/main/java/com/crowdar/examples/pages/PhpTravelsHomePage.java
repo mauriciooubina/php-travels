@@ -11,6 +11,7 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
 
     private final String FLIGHT_BUTTON = "#search > div > div > div > div > div > nav > ul > li:nth-child(2) > a";
     private final String ONEWAY_FLIGHT = "#flights > div > div > form > div > div.row.mb-10.row-reverse.align-items-start.row-return > div.col-8 > div > div:nth-child(1) > label";
+    private final String RETURN_TRIP = "#flights > div > div > form > div > div.row.mb-10.row-reverse.align-items-start.row-return > div.col-8 > div > div:nth-child(2) > label";
     private final String FLIGHT_OPTION = "#flights > div > div > form > div > div.row.mb-10.row-reverse.align-items-start.row-return > div.col-4 > div > div > div > ul > li.active-result.result-selected";
     private final String SELECT_FLY_TYPE = "#flights > div > div > form > div > div.row.mb-10.row-reverse.align-items-start.row-return > div.col-4 > div > div";
     private final String DEPARTURE = "s2id_location_from";
@@ -18,8 +19,15 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
     private final String DESTINATION = "s2id_location_to";
     private final String DESTINATION_SELECTOR = "#location_to";
     private final String DATE_PLACE = "FlightsDateStart";
+    private final String DATE_RETURN_PLACE = "FlightsDateEnd";
     private final String DATE_CLICK_RIGHT = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > nav > div:nth-child(3)";
     private final String SELECT_DATE = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > div > div > div.datepicker--cells.datepicker--cells-days > div:nth-child(27)";
+    private final String SELECT_RETURN_DATE = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > div > div > div.datepicker--cells.datepicker--cells-days > div:nth-child(32)";
+    private final String ADULT = "#flights > div > div > form > div > div.row.no-gutters.mb-15.row-reverse > div.col-md-4.col-xs-12 > div > div > div:nth-child(1) > div > div.form-icon-left > div > input";
+    private final String CHILD = "#flights > div > div > form > div > div.row.no-gutters.mb-15.row-reverse > div.col-md-4.col-xs-12 > div > div > div:nth-child(2) > div > div.form-icon-left > div > input";
+    private final String INFANT = "#flights > div > div > form > div > div.row.no-gutters.mb-15.row-reverse > div.col-md-4.col-xs-12 > div > div > div:nth-child(3) > div > div.form-icon-left > div > input";
+    private final String INCREASE_TRAVELER = "#flights > div > div > form > div > div.row.no-gutters.mb-15.row-reverse > div.col-md-4.col-xs-12 > div > div > div:nth-child(%s) > div > div.form-icon-left > div > span > button.btn.btn-white.bootstrap-touchspin-up";
+    private final String DECREASE_TRAVELER  = "#flights > div > div > form > div > div.row.no-gutters.mb-15.row-reverse > div.col-md-4.col-xs-12 > div > div > div:nth-child(%s) > div > div.form-icon-left > div > span > button.btn.btn-white.bootstrap-touchspin-down";
     private final String SEARCH_BUTTON = "#flights div.tab-inner.menu-horizontal-content div.form-search-main-01 form div.form-inner div:nth-of-type(3) div:nth-of-type(4) button.btn-primary.btn.btn-block";
     private final String FIRST_RESULT = "#LIST > li:nth-child(1) > div > div.theme-search-results-item-preview > div.row > form > div.col-md-2 > div > button";
     private final String USERNAME_EMAIL = "username";
@@ -61,6 +69,11 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         clickElement(By.cssSelector(ONEWAY_FLIGHT));
     }
 
+    public void selectReturnFlight(String tripType) {
+        driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
+        clickElement(By.cssSelector(RETURN_TRIP));
+    }
+
     public void clickFlightType(String flightType) {
         driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
         clickElement(By.cssSelector(SELECT_FLY_TYPE));
@@ -96,8 +109,35 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         clickElement((By.cssSelector(SELECT_DATE)));
     }
 
-    public void selectCorrectTravelers(String adults, String child, String infant) {
+    public void selectReturnDateFlight(String returnDate) throws InterruptedException {
+        driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
+        clickElement(By.id(DATE_RETURN_PLACE));
+        Thread.sleep(2000);
+        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
+        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
+        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
+        clickElement((By.cssSelector(SELECT_RETURN_DATE)));
+    }
 
+    public void selectCorrectTravelers(String adults, String child, String infant) {
+        WebElement adultCount = driver.findElement(By.cssSelector(ADULT));
+        writeProperTraveler(1, Integer.parseInt(adults), Integer.parseInt(adultCount.getAttribute("value")));
+
+        WebElement childCount = driver.findElement(By.cssSelector(CHILD));
+        childCount.getAttribute("value");
+        writeProperTraveler(2, Integer.parseInt(child), Integer.parseInt(childCount.getAttribute("value")));
+
+        WebElement infantCount = driver.findElement(By.cssSelector(INFANT));
+        infantCount.getAttribute("value");
+        writeProperTraveler(3, Integer.parseInt(infant), Integer.parseInt(infantCount.getAttribute("value")));
+    }
+
+    private void writeProperTraveler(int selectorPos, int wantedTravelers, int actualTravelers) {
+        if(actualTravelers<wantedTravelers) {
+            for (int i = actualTravelers; i < wantedTravelers; i++) {
+                clickElement(By.cssSelector(String.format(INCREASE_TRAVELER, selectorPos)));
+            }
+        }
     }
 
     public void clickSearchButton() {
@@ -105,17 +145,11 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         clickElement(By.cssSelector(SEARCH_BUTTON));
     }
 
-    public void clickFirstResult() {
-        clickElement(By.cssSelector(FIRST_RESULT));
-    }
+    public void clickFirstResult() {clickElement(By.cssSelector(FIRST_RESULT));}
 
-    public void writeEmail(String mail) {
-        completeField(By.id(USERNAME_EMAIL), mail);
-    }
+    public void writeEmail(String mail) {completeField(By.id(USERNAME_EMAIL), mail);}
 
-    public void writePassword(String psw) {
-        completeField(By.id(USERNAME_PASSWORD), psw);
-    }
+    public void writePassword(String psw) {completeField(By.id(USERNAME_PASSWORD), psw);}
 
     public void writeName(String name) {
         WebElement namePath = driver.findElement(By.cssSelector(NAME));
@@ -127,25 +161,15 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         surnamePath.sendKeys(surname);
     }
 
-    public void writeMail(String email) {
-        completeField(By.cssSelector(MAIL), email);
-    }
+    public void writeMail(String email) {completeField(By.cssSelector(MAIL), email);}
 
-    public void writePhone(String phone) {
-        completeField(By.id(PHONE), phone);
-    }
+    public void writePhone(String phone) {completeField(By.id(PHONE), phone);}
 
-    public void writeBirthday(String birthday) {
-        completeField(By.id(BIRTHDAY), birthday);
-    }
+    public void writeBirthday(String birthday) {completeField(By.id(BIRTHDAY), birthday);}
 
-    public void writePassport(String passport) {
-        completeField(By.id(PASSPORT), passport);
-    }
+    public void writePassport(String passport) {completeField(By.id(PASSPORT), passport);}
 
-    public void writeExpiration(String expiration) {
-        completeField(By.id(EXPIRATION), expiration);
-    }
+    public void writeExpiration(String expiration) {completeField(By.id(EXPIRATION), expiration);}
 
     public void writeNationality(String nationality) throws InterruptedException {
         WebElement departureField = driver.findElement(By.id(NATIONALITY));
@@ -160,9 +184,7 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         clickElement(By.cssSelector(CARD_VISA));
     }
 
-    public void writeCardNumber(String cardNumber) {
-        completeField(By.id(CARD_NUMBER), cardNumber);
-    }
+    public void writeCardNumber(String cardNumber) {completeField(By.id(CARD_NUMBER), cardNumber);}
 
     public void selectExpiration(String cardExpirateMonth, String cardExpirateYear) throws InterruptedException {
         clickElement(By.id(CARD_MONTH));
@@ -176,13 +198,9 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         clickElement(By.cssSelector(String.format(YEAR, String.valueOf(year%10))));
     }
 
-    public void writeCvv(String cvv) {
-        completeField(By.id(CARD_CVV), cvv);
-    }
+    public void writeCvv(String cvv) {completeField(By.id(CARD_CVV), cvv);}
 
     public void acceptConditions() {clickElement(By.cssSelector(CONDITIONS));}
 
-    public void finishChecking() {
-        clickElement(By.id(CHECKING));
-    }
+    public void finishChecking() {clickElement(By.id(CHECKING));}
 }

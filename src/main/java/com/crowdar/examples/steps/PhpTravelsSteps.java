@@ -27,7 +27,6 @@ public class PhpTravelsSteps extends PageSteps {
         Injector._page(PhpTravelsHomePage.class).selectDateFlight(date);
 
         //CREAR HASH COMO VARIABLE GLOBAL PARA ENCONTRAR RELACION ENTRE ROUND TRIP Y RETURN
-        //MANDAR FECHA COMO TEXTO
 
     }
 
@@ -68,9 +67,20 @@ public class PhpTravelsSteps extends PageSteps {
         Injector._page(PhpTravelsHomePage.class).finishChecking();
     }
 
-    @Then("A reservation number is provide")
+    @Then("A reservation number is not provide")
     public void statVerification() {
-        Assert.assertTrue(!Injector._page(PhpTravelsSearchResultPage.class).getStats().isEmpty());
+        //Assert.assertTrue(!Injector._page(PhpTravelsSearchResultPage.class).getStats().isEmpty());
+        Assert.assertEquals(Injector._page(PhpTravelsSearchResultPage.class).getTitle(),"Booking");
+    }
 
+    @When("the client searchs for a (.*) flight in (.*) from (.*) to (.*) for the date (.*) and (.*)")
+    public void theClientSearchsForARoundTripFlight(String tripType , String flightType , String departure, String destination, String date, String returnDate) throws InterruptedException {
+        Injector._page(PhpTravelsHomePage.class).selectFlight();
+        Injector._page(PhpTravelsHomePage.class).selectReturnFlight(tripType);
+        Injector._page(PhpTravelsHomePage.class).clickFlightType(flightType);
+        Injector._page(PhpTravelsHomePage.class).writeDeparture(departure);
+        Injector._page(PhpTravelsHomePage.class).writeDestination(destination);
+        Injector._page(PhpTravelsHomePage.class).selectDateFlight(date);
+        Injector._page(PhpTravelsHomePage.class).selectReturnDateFlight(returnDate);
     }
 }

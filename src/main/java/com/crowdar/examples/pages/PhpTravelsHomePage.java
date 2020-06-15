@@ -5,6 +5,12 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 public class PhpTravelsHomePage extends PageBasePhpTravels {
@@ -18,6 +24,10 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
     private final String DEPARTURE_SELECTOR ="#location_from";
     private final String DESTINATION = "s2id_location_to";
     private final String DESTINATION_SELECTOR = "#location_to";
+    private final String TOP_OF_CALENDAR = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > nav > div.datepicker--nav-title";
+    private final String YEAR_SELECTOR = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > div > div.datepicker--years.datepicker--body.active > div > div:nth-child(%s)";
+    private final String MONTH_SELECTOR = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > div > div.datepicker--months.datepicker--body.active > div > div:nth-child(%s)";
+    private final String DAY_SELECTOR = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > div > div.datepicker--days.datepicker--body.active > div.datepicker--cells.datepicker--cells-days > div:nth-child(%s)";
     private final String DATE_PLACE = "FlightsDateStart";
     private final String DATE_RETURN_PLACE = "FlightsDateEnd";
     private final String DATE_CLICK_RIGHT = "#datepickers-container > div.datepicker.-bottom-left-.-from-bottom-.active > nav > div:nth-child(3)";
@@ -77,24 +87,35 @@ public class PhpTravelsHomePage extends PageBasePhpTravels {
         departureField.sendKeys(Keys.ENTER);
     }
 
-    public void selectDateFlight(String date) throws InterruptedException {
+    public void selectDateFlight(String date) throws InterruptedException, ParseException {
         driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
         clickElement(By.id(DATE_PLACE));
         Thread.sleep(2000);
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement((By.cssSelector(SELECT_DATE)));
+        Calendar calendar = createCalendarWithDate(date);
+        selectCorrectDate(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
     }
 
-    public void selectReturnDateFlight(String returnDate) throws InterruptedException {
+    public void selectReturnDateFlight(String returnDate) throws InterruptedException, ParseException {
         driver.manage().timeouts().implicitlyWait(100, TimeUnit.SECONDS);
         clickElement(By.id(DATE_RETURN_PLACE));
         Thread.sleep(2000);
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement(By.cssSelector(DATE_CLICK_RIGHT));
-        clickElement((By.cssSelector(SELECT_RETURN_DATE)));
+        Calendar calendar = createCalendarWithDate(returnDate);
+        selectCorrectDate(calendar.get(Calendar.DATE), calendar.get(Calendar.MONTH), calendar.get(Calendar.YEAR));
+    }
+
+    public void selectCorrectDate(int day, int month, int year){
+        clickElement(By.cssSelector(TOP_OF_CALENDAR));
+        clickElement(By.cssSelector(TOP_OF_CALENDAR));
+        clickElement(By.cssSelector(String.format(YEAR_SELECTOR,year%10+2)));
+        clickElement(By.cssSelector(String.format(MONTH_SELECTOR,month)));
+        clickElement(By.cssSelector(String.format(DAY_SELECTOR,day +2)));
+    }
+
+    public Calendar createCalendarWithDate(String date) throws ParseException {
+        Calendar calendar = new GregorianCalendar();
+        Date newDate = new SimpleDateFormat("dd-MM-yyyy").parse(date);
+        calendar.setTime(newDate);
+        return calendar;
     }
 
     public void selectCorrectTravelers(String adults, String child, String infant) {

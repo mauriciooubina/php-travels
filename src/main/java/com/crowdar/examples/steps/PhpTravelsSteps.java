@@ -12,6 +12,8 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.testng.Assert;
 
+import java.text.ParseException;
+
 public class PhpTravelsSteps extends PageSteps {
 
     @Given("The client is in php travels page")
@@ -20,7 +22,7 @@ public class PhpTravelsSteps extends PageSteps {
     }
 
     @When("The client searchs for a (.*) flight in (.*) from (.*) to (.*) for the date (.*)")
-    public void searchFlight(String tripType , String flightType , String departure, String destination, String date) throws InterruptedException {
+    public void searchFlight(String tripType , String flightType , String departure, String destination, String date) throws InterruptedException, ParseException {
         Injector._page(PhpTravelsHomePage.class).selectFlight();
         Injector._page(PhpTravelsHomePage.class).selectTripType(tripType);
         Injector._page(PhpTravelsHomePage.class).clickFlightType(flightType);
@@ -40,7 +42,7 @@ public class PhpTravelsSteps extends PageSteps {
 
     @And("clicks the (.*) result writing email (.*) password (.*)")
     public void clicksTheResultWriting(String result, String mail, String psw) {
-        Injector._page(PhpTravelsFlightPage.class).clickFirstResult();
+        Injector._page(PhpTravelsFlightPage.class).clickFirstResult(result);
         Injector._page(PhpTravelsBillingPage.class).writeEmail(mail);
         Injector._page(PhpTravelsBillingPage.class).writePassword(psw);
     }
@@ -70,12 +72,12 @@ public class PhpTravelsSteps extends PageSteps {
 
     @Then("A reservation number is not provide")
     public void statVerification() {
-        //Assert.assertTrue(!Injector._page(PhpTravelsSearchResultPage.class).getStats().isEmpty());
-        Assert.assertEquals(Injector._page(PhpTravelsSearchResultPage.class).getTitle(),"Booking");
+        Injector._page(PhpTravelsSearchResultPage.class).waitForError();
+        //Assert.assertEquals(Injector._page(PhpTravelsSearchResultPage.class).getTitle(),"Booking");
     }
 
     @When("the client searchs for a (.*) flight in (.*) from (.*) to (.*) for the date (.*) and (.*)")
-    public void theClientSearchsForARoundTripFlight(String tripType , String flightType , String departure, String destination, String date, String returnDate) throws InterruptedException {
+    public void theClientSearchsForARoundTripFlight(String tripType , String flightType , String departure, String destination, String date, String returnDate) throws InterruptedException, ParseException {
         Injector._page(PhpTravelsHomePage.class).selectFlight();
         Injector._page(PhpTravelsHomePage.class).selectReturnFlight(tripType);
         Injector._page(PhpTravelsHomePage.class).clickFlightType(flightType);
